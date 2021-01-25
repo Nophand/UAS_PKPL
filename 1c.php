@@ -1,12 +1,24 @@
 <?php
- 
+
 class Latihan
 {
     private $DISKON = 50000;
- 
+    // POTONGAN DISKON 10%
+    private $JUMLAH_DISKON = 0.1;
+
     /**
-     * Memilah elemen array yang layak dapat diskon sesuai kriteria yang
-diterapkan pada function strukDiskon
+     * Mencetak Struk berasal dari struk yg layak diskon hingga keterangan mendapatkan jumlah diskon
+     * Parameter: $arrBelanjaan
+     * Return: array 
+     */
+    function filterStruk($arrBelanjaan)
+    {
+        $arrBelanjaan =  $this->filterStrukYangLayakDapatDiskon($arrBelanjaan);
+        return array_map(array($this, "getDiskon"), $arrBelanjaan);
+    }
+
+    /**
+     * Memilah elemen array yang layak dapat diskon sesuai kriteria yang diterapkan pada function strukDiskon
      * Parameter: $arrBelanjaan
      * Return: array 
      */
@@ -14,7 +26,7 @@ diterapkan pada function strukDiskon
     {
         return array_filter($arrBelanjaan, array($this, "strukDiskon"));
     }
- 
+
     /**
      * Rule pemilahan elemen array yang layak dapat diskon
      * Parameter: $arrBelanjaan
@@ -24,33 +36,30 @@ diterapkan pada function strukDiskon
     {
         if ($arrBelanjaan['jumlahBelanja'] > $this->DISKON) {
             return $arrBelanjaan;
-        }   
+        }
     }
 
-    function hasilDiskonan($arrBelanjaan){
-          $arrDiskon = array(
-            array('diskon' => 1000),
-            array('diskon' => 200),
-            array('diskon' => 300),
-            array('diskon' => 400),
-            array('diskon' => 500),  
-          );
-          
-          $result = array_map(function($arrDiskon,$arrBelanjaan){
-            return array('nomorStruk'=>$nomorStruk,'jumlahBelanja'=>$jumlahBelanja,'diskon'=>$diskon);
-          }
-        // return array_map(null,$arrBelanjaan,$arrDiskon);
+    /**
+     * menghitung jumnla diskon yg didaapat
+     * Parameter: $arrBelanjaan
+     * Return: array 
+     */
+    protected function getDiskon($arrBelanjaan)
+    {
+        $totalDiskon = $arrBelanjaan['jumlahBelanja'] * $this->JUMLAH_DISKON;
+        $arrBelanjaan['diskon'] = $totalDiskon;
+        return ($arrBelanjaan);
     }
 }
- 
+
 $arrBelanjaan = array(
     array('nomorStruk' => 1, 'jumlahBelanja' => 77400),
     array('nomorStruk' => 2, 'jumlahBelanja' => 19000),
     array('nomorStruk' => 3, 'jumlahBelanja' => 49890),
     array('nomorStruk' => 4, 'jumlahBelanja' => 109000),
-    array('nomorStruk' => 5, 'jumlahBelanja' => 56000),  
+    array('nomorStruk' => 5, 'jumlahBelanja' => 56000),
 );
- 
+
 $coba = new Latihan;
-print_r($coba->hasilDiskonan($arrBelanjaan));
+print_r($coba->filterStruk($arrBelanjaan));
 ?>
